@@ -9,8 +9,6 @@ class Game:
         self.size = self.width, self.height = 640, 480
         self.screen = None
         self.background = None
-        self.pxpos = 5
-        self.pypos = 7
 
     def on_init(self):
         pygame.init()
@@ -21,6 +19,15 @@ class Game:
         self.background = pygame.Surface(self.size)
         self.background= self.background.convert()
         self.background.fill((0,0,0))
+        self.pxpos = 5
+        self.pypos = 7
+        self.matches = 5
+        self.matchtextpos = (20,0)
+        self.points = 0
+        self.pointstextpos = (520,0)
+
+
+
         #self.playerpos = self.playerstart
 
     def on_event(self,event):
@@ -31,21 +38,28 @@ class Game:
         if( pygame.key.get_pressed()[pygame.K_RIGHT] != 0 ):
             self.pxpos = self.pxpos +1
         if( pygame.key.get_pressed()[pygame.K_DOWN] != 0 ):
-            self.pxpos = self.pxpos -1
+            self.pypos = self.pypos +1
         if( pygame.key.get_pressed()[pygame.K_UP] != 0 ):
-            self.pxpos = self.pxpos +1
+            self.pypos = self.pypos -1
+        if( pygame.key.get_pressed()[pygame.K_m] !=0):
+            self.matches = self.matches -1
+
 
     def on_loop(self):
         pass
 
     def on_render(self):
         #self.background.blit(self.text)
-        point = pygame.image.load("ball.jpeg")
+        #point = pygame.image.load("pictures/matchStick.png")
         player = pygame.image.load("ball.jpeg")
-        matches = pygame.image.load("ball.jpeg")
+        #matches = pygame.image.load("pictures/matchStick.png")
         self.screen.blit(self.background,(0,0))
-        self.screen.blit(point,(400,0))
-        self.screen.blit(matches,(20,0))
+        #self.screen.blit(point,(470,0))
+        #self.screen.blit(matches,(10,0))
+        self.pointstext = self.font.render("Points: " + str(self.points),1,(200,200,200))
+        self.matchtext = self.font.render(": "+str(self.matches), 1, (200, 200, 200))
+        self.screen.blit(self.matchtext, self.matchtextpos)
+        self.screen.blit(self.pointstext,self.pointstextpos)
         self.screen.blit(player,(20*self.pxpos,20*self.pypos))
         pygame.display.flip()
 
