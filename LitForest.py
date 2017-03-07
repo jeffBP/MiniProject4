@@ -24,7 +24,7 @@ class Game:
         self.screen = pygame.display.set_mode(self.size)
         self.game_running = True
         self.background = pygame.Surface(self.size)
-        self.background= self.background.convert()
+        self.background = self.background.convert()
         self.background.fill((0,0,0))
         self.pxpos = 5
         self.pypos = 7
