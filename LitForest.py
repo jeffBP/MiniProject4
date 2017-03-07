@@ -1,6 +1,13 @@
 import pygame
 import math
 from pygame.locals import *
+import maplist
+import map
+
+
+
+
+
 
 class Game:
 
@@ -22,11 +29,12 @@ class Game:
         self.pxpos = 5
         self.pypos = 7
         self.matches = 5
-        self.matchtextpos = (20,0)
+        self.matchislit = False
+        self.matchtextpos = (40,20)
         self.points = 0
-        self.pointstextpos = (520,0)
-
-
+        self.pointstextpos = (520,20)
+        self.matchtimer = 0
+        self.start_ticks = 0
 
         #self.playerpos = self.playerstart
 
@@ -42,24 +50,40 @@ class Game:
         if( pygame.key.get_pressed()[pygame.K_UP] != 0 ):
             self.pypos = self.pypos -1
         if( pygame.key.get_pressed()[pygame.K_m] !=0):
-            self.matches = self.matches -1
+            if self.matches >= 1:
+                self.matchislit = True
+                self.start_ticks=pygame.time.get_ticks() #starter tick
+
+            #here also render map
 
 
     def on_loop(self):
-        pass
+
+        if self.matchislit:
+            seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 #calculate how many seconds
+            self.matchtimer= 5 - seconds
+            self.matchtimerprint = self.font.render(str(self.matchtimer),1,(200,200,200))
+            if seconds>5:
+                self.matches = self.matches -1# if more than 10 seconds close the game
+                self.matchislit = False
+
 
     def on_render(self):
         #self.background.blit(self.text)
         #point = pygame.image.load("pictures/matchStick.png")
-        player = pygame.image.load("ball.jpeg")
-        #matches = pygame.image.load("pictures/matchStick.png")
+
+        player = pygame.image.load("pictures/player.png")
+        matches = pygame.image.load("pictures/matchStick.png")
         self.screen.blit(self.background,(0,0))
         #self.screen.blit(point,(470,0))
-        #self.screen.blit(matches,(10,0))
-        self.pointstext = self.font.render("Points: " + str(self.points),1,(200,200,200))
-        self.matchtext = self.font.render(": "+str(self.matches), 1, (200, 200, 200))
-        self.screen.blit(self.matchtext, self.matchtextpos)
-        self.screen.blit(self.pointstext,self.pointstextpos)
+        self.screen.blit(matches,(10,5))
+        self.pointsprint = self.font.render("Points: " + str(self.points),1,(200,200,200))
+        self.matchprint = self.font.render(": "+str(self.matches), 1, (200, 200, 200))
+        if self.matchislit:
+        #    self.screen.blit(self.mapdrawing,(80,80))
+            self.screen.blit(self.matchtimerprint, (300,40))
+        self.screen.blit(self.matchprint, self.matchtextpos)
+        self.screen.blit(self.pointsprint,self.pointstextpos)
         self.screen.blit(player,(20*self.pxpos,20*self.pypos))
         pygame.display.flip()
 
