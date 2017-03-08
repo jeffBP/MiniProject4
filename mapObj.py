@@ -1,4 +1,4 @@
-import mapList
+import map1
 import pygame
 from pygame.locals import *
 
@@ -35,9 +35,9 @@ class Map(object):
             for j in range(self.grid_size[0]):
                 newRect = Rect(j*self.block_width, i*self.block_height, self.block_width, self.block_height)
                 if self.map_matrix[i][j] == 1:
-                    pygame.draw.rect(self.map_drawing, mapList.wall1, newRect)
+                    pygame.draw.rect(self.map_drawing, self.wall, newRect)
                 else:
-                    pygame.draw.rect(self.map_drawing, mapList.ground1, newRect)
+                    pygame.draw.rect(self.map_drawing, self.ground, newRect)
 
 
 
