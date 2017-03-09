@@ -73,7 +73,7 @@ class Game:
 
         if self.matchislit:
             seconds=(pygame.time.get_ticks()-self.start_ticks)/1000 #calculate how many seconds
-            self.matchtimer= 3s - seconds
+            self.matchtimer= 3 - seconds
             self.matchtimerprint = self.font.render(str(self.matchtimer),1,(200,200,200))
             if seconds>3:
                 self.matches = self.matches -1# if more than 10 seconds close the game
