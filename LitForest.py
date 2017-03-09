@@ -16,6 +16,7 @@ class Game:
         pygame.init()
         pygame.font.init()
         self.font = pygame.font.Font(None, 36)
+        self.winfont = pygame.font.Font(None, 72)
         self.screen = pygame.display.set_mode(self.size)
         self.game_running = True
         self.background = pygame.Surface(self.size)
@@ -31,6 +32,9 @@ class Game:
         self.pointstextpos = (520,20)
         self.matchtimer = 0
         self.start_ticks = 0
+        self.win = False
+        self.winmsg = self.winfont.render("YOU WIN!", 1, (255, 0, 0))
+        self.winmsg2 = self.font.render("Press s to restart", 1, (255, 0, 0))
 
 
 
@@ -41,30 +45,43 @@ class Game:
         if event.type == pygame.QUIT:
             self.game_running= False
         if not self.matchislit:
-            if( pygame.key.get_pressed()[pygame.K_LEFT] != 0 ):
-                if self.mapone.getCollision(self.pxpos-1,self.pypos):
-                    self.points= self.points + 1
-                else:
-                    self.pxpos = self.pxpos -1
-            if( pygame.key.get_pressed()[pygame.K_RIGHT] != 0 ):
-                if self.mapone.getCollision(self.pxpos+1,self.pypos):
-                    self.points = self.points + 1
-                else:
-                    self.pxpos = self.pxpos +1
-            if( pygame.key.get_pressed()[pygame.K_DOWN] != 0 ):
-                if self.mapone.getCollision(self.pxpos,self.pypos+1):
-                    self.points = self.points + 1
-                else:
-                    self.pypos = self.pypos +1
-            if( pygame.key.get_pressed()[pygame.K_UP] != 0 ):
-                if self.mapone.getCollision(self.pxpos,self.pypos-1):
-                    self.points = self.points + 1
-                else:
-                    self.pypos = self.pypos -1
-            if( pygame.key.get_pressed()[pygame.K_m] !=0):
-                if self.matches >= 1:
-                    self.matchislit = True
-                    self.start_ticks=pygame.time.get_ticks() #starter tick
+            if not self.win:
+                if( pygame.key.get_pressed()[pygame.K_LEFT] != 0 ):
+                    if self.mapone.getCollision(self.pxpos-1,self.pypos):
+                        self.points= self.points + 1
+                    else:
+                        self.pxpos = self.pxpos -1
+                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                            self.win = True
+
+                if( pygame.key.get_pressed()[pygame.K_RIGHT] != 0 ):
+                    if self.mapone.getCollision(self.pxpos+1,self.pypos):
+                        self.points = self.points + 1
+                    else:
+                        self.pxpos = self.pxpos +1
+                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                            self.win = True
+                if( pygame.key.get_pressed()[pygame.K_DOWN] != 0 ):
+                    if self.mapone.getCollision(self.pxpos,self.pypos+1):
+                        self.points = self.points + 1
+                    else:
+                        self.pypos = self.pypos +1
+                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                            self.win = True
+                if( pygame.key.get_pressed()[pygame.K_UP] != 0 ):
+                    if self.mapone.getCollision(self.pxpos,self.pypos-1):
+                        self.points = self.points + 1
+                    else:
+                        self.pypos = self.pypos -1
+                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                            self.win = True
+                if( pygame.key.get_pressed()[pygame.K_m] !=0):
+                    if self.matches >= 1:
+                        self.matchislit = True
+                        self.start_ticks=pygame.time.get_ticks() #starter tick
+        if self.win:
+            if( pygame.key.get_pressed()[pygame.K_s] !=0):
+                self.on_init()
 
             #here also render map
 
@@ -95,6 +112,10 @@ class Game:
         #    self.screen.blit(self.mapdrawing,(80,80))
             self.screen.blit(self.matchtimerprint, (300,40))
             self.screen.blit(self.mapone.map_drawing,(80,80))
+        if self.win:
+            self.screen.blit(self.mapone.map_drawing,(80,80))
+            self.screen.blit(self.winmsg, (160, 0))
+            self.screen.blit(self.winmsg2, (160, 50))
         self.screen.blit(self.matchprint, self.matchtextpos)
         self.screen.blit(self.pointsprint,self.pointstextpos)
         self.screen.blit(player,(40*(2.3+self.pxpos),40*(2.3+self.pypos)))

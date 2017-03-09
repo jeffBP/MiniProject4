@@ -30,6 +30,12 @@ class Map(object):
         else:
             return False
 
+    def getEnd(self, x, y):
+        if self.map_matrix[y][x] == 3:
+            return True
+        else:
+            return False
+
     def render_map(self):
         for i in range(self.grid_size[1]):
             for j in range(self.grid_size[0]):
@@ -44,7 +50,7 @@ class Map(object):
 if __name__ == '__main__':
     pygame.init()
     screen = pygame.display.set_mode((400, 400))
-    newMap = Map(mapList.map1, mapList.wall1, mapList.ground1)
+    newMap = Map(map1.mapArr, map1.wall, map1.ground)
     newMap.render_map()
     while True:
         screen.blit(newMap.map_drawing, (0, 0))
