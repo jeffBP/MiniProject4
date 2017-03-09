@@ -42,6 +42,8 @@ class Map(object):
                 newRect = Rect(j*self.block_width, i*self.block_height, self.block_width, self.block_height)
                 if self.map_matrix[i][j] == 1:
                     pygame.draw.rect(self.map_drawing, self.wall, newRect)
+                elif self.map_matrix[i][j] == 3:
+                    pygame.draw.rect(self.map_drawing, (255, 0, 0), newRect)
                 else:
                     pygame.draw.rect(self.map_drawing, self.ground, newRect)
 
