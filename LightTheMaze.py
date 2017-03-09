@@ -1,7 +1,7 @@
 import pygame
 import math
 from pygame.locals import *
-import map1
+import map1, map2
 import mapObj
 
 class Game:
@@ -11,6 +11,9 @@ class Game:
         self.size = self.width, self.height = 640, 480
         self.screen = None
         self.background = None
+        self.mapone = mapObj.Map(map1.mapArr,map1.wall,map1.ground)
+        self.maptwo = mapObj.Map(map2.mapArr,map2.wall,map2.ground)
+        self.currentMap = None
 
     def on_init(self):
         pygame.init()
@@ -22,10 +25,13 @@ class Game:
         self.background = pygame.Surface(self.size)
         self.background= self.background.convert()
         self.background.fill((0,0,0))
-        self.mapone =  mapObj.Map(map1.mapArr,map1.wall,map1.ground)
-        self.pxpos =  self.mapone.playerStart[0]
-        self.pypos =  self.mapone.playerStart[1]
-        self.matches = map1.startmatch
+        if self.currentMap == self.mapone:
+            self.currentMap = self.maptwo
+        else:
+            self.currentMap = self.mapone
+        self.pxpos =  self.currentMap.playerStart[0]
+        self.pypos =  self.currentMap.playerStart[1]
+        self.matches = 4
         self.matchislit = False
         self.matchtextpos = (40,20)
         self.points = 0
@@ -33,13 +39,9 @@ class Game:
         self.matchtimer = 0
         self.start_ticks = 0
         self.win = False
-        self.winmsg = self.winfont.render("YOU WIN!", 1, (255, 0, 0))
-        self.winmsg2 = self.font.render("Press s to restart", 1, (255, 0, 0))
+        self.winmsg = self.winfont.render("YOU WIN", 1, (255, 0, 0))
+        self.winmsg2 = self.font.render("Press s to move on", 1, (255, 0, 0))
 
-
-
-
-        #self.playerpos = self.playerstart
 
     def on_event(self,event):
         if event.type == pygame.QUIT:
@@ -47,33 +49,33 @@ class Game:
         if not self.matchislit:
             if not self.win:
                 if( pygame.key.get_pressed()[pygame.K_LEFT] != 0 ):
-                    if self.mapone.getCollision(self.pxpos-1,self.pypos):
+                    if self.currentMap.getCollision(self.pxpos-1,self.pypos):
                         self.points= self.points + 1
                     else:
                         self.pxpos = self.pxpos -1
-                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                        if self.currentMap.getEnd(self.pxpos, self.pypos):
                             self.win = True
 
                 if( pygame.key.get_pressed()[pygame.K_RIGHT] != 0 ):
-                    if self.mapone.getCollision(self.pxpos+1,self.pypos):
+                    if self.currentMap.getCollision(self.pxpos+1,self.pypos):
                         self.points = self.points + 1
                     else:
                         self.pxpos = self.pxpos +1
-                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                        if self.currentMap.getEnd(self.pxpos, self.pypos):
                             self.win = True
                 if( pygame.key.get_pressed()[pygame.K_DOWN] != 0 ):
-                    if self.mapone.getCollision(self.pxpos,self.pypos+1):
+                    if self.currentMap.getCollision(self.pxpos,self.pypos+1):
                         self.points = self.points + 1
                     else:
                         self.pypos = self.pypos +1
-                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                        if self.currentMap.getEnd(self.pxpos, self.pypos):
                             self.win = True
                 if( pygame.key.get_pressed()[pygame.K_UP] != 0 ):
-                    if self.mapone.getCollision(self.pxpos,self.pypos-1):
+                    if self.currentMap.getCollision(self.pxpos,self.pypos-1):
                         self.points = self.points + 1
                     else:
                         self.pypos = self.pypos -1
-                        if self.mapone.getEnd(self.pxpos, self.pypos):
+                        if self.currentMap.getEnd(self.pxpos, self.pypos):
                             self.win = True
                 if( pygame.key.get_pressed()[pygame.K_m] !=0):
                     if self.matches >= 1:
@@ -111,9 +113,9 @@ class Game:
         if self.matchislit:
         #    self.screen.blit(self.mapdrawing,(80,80))
             self.screen.blit(self.matchtimerprint, (300,40))
-            self.screen.blit(self.mapone.map_drawing,(80,80))
+            self.screen.blit(self.currentMap.map_drawing,(120,80))
         if self.win:
-            self.screen.blit(self.mapone.map_drawing,(80,80))
+            self.screen.blit(self.currentMap.map_drawing,(80,80))
             self.screen.blit(self.winmsg, (160, 0))
             self.screen.blit(self.winmsg2, (160, 50))
         self.screen.blit(self.matchprint, self.matchtextpos)
