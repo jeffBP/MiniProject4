@@ -27,7 +27,9 @@ class Game:
         """
         pygame.init()
         pygame.font.init()
-        self.startTime = pygame.time.get_ticks()
+        if self.currentMap == None:
+            self.startTime = pygame.time.get_ticks()
+            self.points = 0
         self.font = pygame.font.Font(None, 36)
         self.winfont = pygame.font.Font(None, 72)
         self.screen = pygame.display.set_mode(self.size)
@@ -49,7 +51,7 @@ class Game:
         #Initialize match and point counters
         self.matches = 4
         self.matchtextpos = (40,20)
-        self.points = 0
+
         self.pointstextpos = (520,20)
         self.matchtimer = 0
         self.start_ticks = 0
@@ -206,7 +208,9 @@ class Game:
         #Displays player
         self.screen.blit(player,(40*(2.3+self.pxpos),40*(2.3+self.pypos)))
 
+        #If less than three seconds since start.
         if pygame.time.get_ticks() - self.startTime < 3000:
+            #Display the title
             self.screen = pygame.display.set_mode(self.size)
             instructions = self.font.render("Arrow Keys to move", 1, (255, 0, 0))
             instructions2 = self.font.render("M to use match", 1, (255, 0, 0))
@@ -215,7 +219,7 @@ class Game:
             self.screen.blit(instructions, (0, 50))
             self.screen.blit(instructions2, (0, 70))
 
-
+        #Flip the display
         pygame.display.flip()
 
     def on_cleanup(self):
@@ -227,14 +231,27 @@ class Game:
         pygame.quit()
 
     def on_execute(self):
+        """
+        Executes all state methods for game
+        """
+
+        #If not init
         if self.on_init() == False:
+            #Game not running
             self._running =  False
 
+        #while game is running
         while (self.game_running):
+
+            #Run through events
             for event in pygame.event.get():
                 self.on_event(event)
+
+            #Do loop math and render screen
             self.on_loop()
             self.on_render()
+
+        #shutdown
         self.on_cleanup()
 
 if __name__ == "__main__":
